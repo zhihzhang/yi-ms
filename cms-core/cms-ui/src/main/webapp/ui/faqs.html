@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FAQ - CMS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+
+                <!-- When you get a logo for cms.api uncomment this -->
+                <!--<a class="brand" href="/">-->
+                <!--<div class="cms-api-logo">CMS.API</div>-->
+                <!--</a>-->
+                <a class="brand" href="/">CMS</a>
+                <ul class="nav">
+                    <li><a href="doc.html">Getting Started</a></li>
+                    <li><a href="console.html">Goto Try me!</a></li>
+                    <li><a href="policy.html">Access Policy</a></li>
+                    <li class="active"><a href="faqs.html">FAQs</a></li>
+                </ul>
+                <form class="navbar-search pull-right" action="/"
+                      id="cse-search-box">
+                    <input type="hidden" name="ie" value="UTF-8">
+                    <input type="hidden" name="hl" value="en">
+                    <input type="search" name="q" class="search-query" id="q"
+                           autocomplete="off" placeholder="Search" autofocus>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="header">
+        <h1>Frequently Asked Questions.</h1>
+    </div>
+    <br>
+
+    <div class="intro">
+        <a href="#1"><h3>1. Does every class in cms repo needs to define a
+            policy? If yes,why?</h3></a>
+
+        <p>
+            Yes. Each class-repo combination needs to have a policy defined in
+            the system. Otherwise, no instances can be created. The reason is to
+            have data consistency if a policy is defined for the class later in
+            the game.
+        </p>
+    </div>
+
+    <div class="intro">
+        <a href="#2"><h3>2. How to generate a token for a CORP system
+            account?</h3></a>
+
+        <p>
+            Make a GET request on "http://< server-host >:8080/validate/user/<
+            username >" with a header "X-PASSWORD: < your NT password >".
+            Ex.,
+        <pre>curl  http://< server-host >:8080/validate/user/pkaliyamurthy -H "X-PASSWORD: swordfish" </pre>
+        Yes. It is not secure. We are working on that.
+        </p>
+    </div>
+
+    <div class="intro">
+        <a href="#3"><h3>3. Do read calls need authentication?</h3></a>
+
+        <p>
+            No. Read is open. Anybody can read the data, by direct GET calls or
+            through CMS queries.
+        </p>
+    </div>
+
+    <div class="intro">
+        <a href="#4"><h3>4. How to pass token for write calls?</h3></a>
+
+        <p>
+            Pass the token ( Refer FAQ 2 for getting token ), in the
+            "authorization" HTTP header.
+            Auth failures are indicated by a '401' response status as usual.
+        </p>
+    </div>
+
+    <div class="intro">
+        <a href="#5"><h3>5. How to I create Access Policy? update an existing
+            policy? </h3></a>
+
+        <p>
+            Create <a
+                href="https://github.scm.corp.ebay.com/cloud-cms/cms.api/issues/new">an
+            issue </a> in github and label it as "policy request" and drop an
+            email to DL-eBay-Stratus-CMSWS-Requests for quick creation.
+        </p>
+    </div>
+
+    <div class="intro">
+        <a href="#6"><h3>6. How to create a access policy, if I am a
+            superuser?</h3></a>
+
+        <p>
+            Do a POST on http://< server > : < port
+            >/cms/repositories/cmsdbconfig/branches/main/AccessPolicy
+            with payload as the policy. Do not forget to refesh the policy cache
+            after creation. See the next FAQ.
+
+            You may use whatever http tool you are comfortable with.
+        </p>
+        Ex. qa URL:
+        <pre>http://phx5qa01c-5fca.stratus.phx.qa.ebay.com:8080/cms/repositories/cmsdbconfig/branches/main/AccessPolicy</pre>
+        <p>
+            Ex. policy with no object level rules.
+        </p>
+<pre>
+    {
+       "name":"AssetServer",
+       "repo": "cmsdbconfig",
+       "rules":{
+          "class":{
+             "create":[
+                "DL-eBay-Stratus-CMS-BootstrapGroup"
+             ]
+          }
+       }
+    }
+</pre>
+
+        <p> Ex. policy with object level rules.</p>
+<pre>
+{
+    "name" : "TestBridgeGroup",
+    "repo" : "cmsdb",
+    "rules" : {
+        "class" : {
+            "create" : ["pike", "russ"],
+            "update" : ["andrew", "cox", "pk"]
+        },
+        "object" : [
+            {
+              "update" : ["cox", "dl-updates"]
+            },
+            {
+              "creator" : "pike",
+              "update" : ["andrew"],
+              "fields" : ["id", "label"]
+            },
+            {
+              "creator" : "russ",
+              "update" : ["dl-updates", "cox"],
+              "fields" : ["status", "desc"]
+            },
+            {
+              "creator" : "russ",
+              "update" : ["pk"],
+              "fields" : ["name", "desc", "id"]
+            },
+            {
+               "update": ["hunt"],
+               "fields": ["extra", "dl-updates"]
+            }
+        ]
+    }
+}
+</pre>
+    </div>
+
+    <div class="intro">
+        <h3>6. How to refresh the policy cache? </h3>
+
+        <p>
+            Do a simple empty POST on http://< server >: < adminport
+            >/tasks/refresh-policy-cache
+            Note you have to use the admin port :8081
+
+            Ex.,
+        <pre>curl -X POST http://localhost:8081/refresh-policy-cache</pre>
+        </p>
+    </div>
+
+</div>
+
+</body>
+
+</body>
+</html>

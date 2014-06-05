@@ -1,0 +1,3061 @@
+[
+{
+	"description":"A stratus resource representing a load balancer access point",
+	"name" : "AccessPoint",
+	"repository": "stratus-cms",
+	"pluralName":"AccessPoints",
+	"parent": "Resource",        
+	"fields" : {
+		"vip":{
+			"description":"The LB virtualIP",
+			"mandatory":false,
+			"refDataType": "LBVirtualIP",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"fqdns":{
+			"description":"An alternative name for this AccessPoint",
+			"refDataType": "FQDN",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+	    	},
+            	"protocol": {
+			"description": "socket protocol",
+			"dataType": "enumeration",
+			"enumValues": [ "any","tcp","dns","udp","ftp","radius","http","rtsp","sip_udp","ssl","ssl_tcp" ],
+			"cardinality": "One",
+			"mandatory": true
+		}
+        
+    }
+},
+
+{
+	"name": "Agent",
+	"repository": "stratus-cms",
+	"pluralName": "Agent",
+	"parent": "Resource",
+	"description": "Agent in the nodeserver",
+	"fields": {
+		"type":{
+			"description":"agent type",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"version":{
+			"description":"agent version",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"status":{
+			"description":"status of the agent",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"networkAddress":{
+			"description":"network address of this agent",
+			"mandatory":false,
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"port":{
+			"description":"port of the agent",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"	            
+		}
+	}
+},
+
+{ 
+	"name": "Compute",
+	"repository": "stratus-cms",
+	"pluralName": "Computes",
+	"parent": "Resource",	
+	"description": "bare metal or vm instance",
+	"fields": {
+		"nodeServer": {
+			"description": "identity to physical layer server resource",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"computeType":{
+			"description":"The type of the compute",
+			"mandatory":true,
+			"enumValues": ["baremetal","hypervisor","esx","kvm","solaris","other"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"uuid" : {
+			"description":"external system uuid",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"flavor" : {
+		       "description" : "the size of the compute",
+			"mandatory": false,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"imageProfile" : {
+			"description":"Image profile for this compute",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"imageId" : {
+			"description":"image version or Uid of this compute",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"managementService" : {
+			"description":"the endpoint that manages this compute",
+			"refDataType": "AccessPoint",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		}
+	}	
+},
+
+{
+	"description":"represents an instance of an Operation System running on physical or virtual hardware",
+	"name" : "NodeServer",
+	"repository": "stratus-cms",
+	"pluralName":"NodeServers",
+	"parent": "Resource",
+	"fields":{
+		"osProfile":{
+			"description":"Reference to the os profile used to generate this OS instance",
+			"refDataType": "OsProfile",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"capabilities":{
+			"description":"Enumeration of capability used for allocation",
+			"refDataType": "ResourceCapability",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"networkController":{
+			"description":"List of network controllers, e.g. provided by ifconfig -a",
+			"refDataType": "NetworkController",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"hostName":{
+			"description":"hostname of this node",
+			"mandatory":true,
+			"refDataType": "FQDN",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"networkAddress":{
+			"description":"network address of this node",
+			"mandatory":true,
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"nodeType":{
+			"description":"provides the role of this server: LOM, Virtual Machine Manager, or compute resource",
+			"mandatory":true,
+			"enumValues": ["physical","lom","vmm","virtual","zone","globalzone","unknown"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"ntpServers":{
+		    "description": "primary and secondary ntp servers",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"timezone":{
+		    "description": "timezone belongs to",
+			"enumValues": ["unknown","GMT(UTC+0)","A(UTC+1)","ACDT(UTC+10:30)","ACST(UTC+9:30)","ADT(UTC-3)","AEDT(UTC+11)","AEST(UTC+10)","AFT(UTC+4:30)","AKDT(UTC-8)","AKST(UTC-9)","ALMT(UTC+6)","AMST(UTC+5)","AMST(UTC-3)","AMT(UTC+4)","AMT(UTC-4)","ANAST(UTC+12)","ANAT(UTC+12)","AQTT(UTC+5)","ART(UTC-3)","AST(UTC+3)","AST(UTC-4)","AWDT(UTC+9)","AWST(UTC+8)","AZOT(UTC-1)","AZST(UTC+5)","AZT(UTC+4)","B(UTC+2)","BNT(UTC+8)","BOT(UTC-4)","BRST(UTC-2)","BRT(UTC-3)","BST(UTC+1)","BST(UTC+6)","BTT(UTC+6)","C(UTC+10)","C(UTC+3)","CAST(UTC+8)","CAT(UTC+2)","CCT(UTC+6:30)","CDT(UTC-4)","CDT(UTC-5)","CEST(UTC+2)","CET(UTC+1)","CHADT(UTC+13:45)","CHAST(UTC+12:45)","CKT(UTC-10)","CLST(UTC-3)","CLT(UTC-4)","COT(UTC-5)","CST(UTC+8)","CST(UTC-5)","CST(UTC-6)","CVT(UTC-1)","CXT(UTC+7)","D(UTC+4)","DAVT(UTC+7)","E(UTC+5)","EASST(UTC-5)","EAST(UTC-6)","EAT(UTC+3)","ECT(UTC-5)","EDT(UTC+11)","EDT(UTC-4)","EEST(UTC+3)","EET(UTC+2)","EGT(UTC-1)","EST(UTC-5)","ET(UTC-5)","F(UTC+6)","FJST(UTC+13)","FJT(UTC+12)","FKST(UTC-3)","FKT(UTC-4)","FNT(UTC-2)","G(UTC+7)","GALT(UTC-6)","GAMT(UTC-9)","GET(UTC+4)","GFT(UTC-3)","GILT(UTC+12)","GST(UTC+4)","GYT(UTC-4)","H(UTC+8)","HAA(UTC-3)","HAC(UTC-5)","HADT(UTC-9)","HAE(UTC-4)","HAP(UTC-7)","HAR(UTC-6)","HAST(UTC-10)","HAT(UTC-2:30)","HAY(UTC-8)","HKT(UTC+8)","HLV(UTC-4:30)","HNA(UTC-4)","HNC(UTC-6)","HNE(UTC-5)","HNP(UTC-8)","HNR(UTC-7)","HNT(UTC-3:30)","HNY(UTC-9)","HOVT(UTC+7)","I(UTC+9)","ICT(UTC+7)","IDT(UTC+3)","IOT(UTC+6)","IRDT(UTC+4:30)","IRKST(UTC+9)","IRKT(UTC+9)","IRST(UTC+3:30)","IST(UTC+1)","IST(UTC+2)","IST(UTC+5:30)","JST(UTC+9)","K(UTC+10)","KGT(UTC+6)","KRAST(UTC+8)","KRAT(UTC+8)","KST(UTC+9)","KUYT(UTC+4)","L(UTC+11)","LHDT(UTC+11)","LHST(UTC+10:30)","LINT(UTC+14)","M(UTC+12)","MAGST(UTC+12)","MAGT(UTC+12)","MART(UTC-9:30)","MAWT(UTC+5)","MDT(UTC-6)","MESZ(UTC+2)","MEZ(UTC+1)","MHT(UTC+12)","MMT(UTC+6:30)","MSD(UTC+4)","MSK(UTC+4)","MST(UTC-7)","MUT(UTC+4)","MVT(UTC+5)","MYT(UTC+8)","N(UTC-1)","NCT(UTC+11)","NDT(UTC-2:30)","NFT(UTC+11:30)","NOVST(UTC+7)","NOVT(UTC+6)","NPT(UTC+5:45)","NST(UTC-3:30)","NUT(UTC-11)","NZDT(UTC+13)","NZST(UTC+12)","O(UTC-2)","OMSST(UTC+7)","OMST(UTC+7)","P(UTC-3)","PDT(UTC-7)","PET(UTC-5)","PETST(UTC+12)","PETT(UTC+12)","PGT(UTC+10)","PHOT(UTC+13)","PHT(UTC+8)","PKT(UTC+5)","PMDT(UTC-2)","PMST(UTC-3)","PONT(UTC+11)","PST(UTC-8)","PT(UTC-8)","PWT(UTC+9)","PYST(UTC-3)","PYT(UTC-4)","Q(UTC-4)","R(UTC-5)","RET(UTC+4)","S(UTC-6)","SAMT(UTC+4)","SAST(UTC+2)","SBT(UTC+11)","SCT(UTC+4)","SGT(UTC+8)","SRT(UTC-3)","SST(UTC-11)","T(UTC-7)","TAHT(UTC-10)","TFT(UTC+5)","TJT(UTC+5)","TKT(UTC+13)","TLT(UTC+9)","TMT(UTC+5)","TVT(UTC+12)","U(UTC-8)","ULAT(UTC+8)","UYST(UTC-2)","UYT(UTC-3)","UZT(UTC+5)","V(UTC-9)","VET(UTC-4:30)","VLAST(UTC+11)","VLAT(UTC+11)","VUT(UTC+11)","W(UTC-10)","WAST(UTC+2)","WAT(UTC+1)","WEST(UTC+1)","WESZ(UTC+1)","WFT(UTC+12)","WGST(UTC-2)","WGT(UTC-3)","WIB(UTC+7)","WIT(UTC+9)","WITA(UTC+8)","WST(UTC+1)","WST(UTC+13)","X(UTC-11)","Y(UTC-12)","YAKST(UTC+10)","YAKT(UTC+10)","YAPT(UTC+10)","YEKST(UTC+6)","YEKT(UTC+6)"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"agents":{
+		    "description": "agents run on this server",
+			"refDataType": "Agent",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"adminStatus":{
+			"description":"adminstatus of the node",
+			"mandatory":true,
+			"enumValues": ["NORMAL","CMCHECK","SACHECK","SMOKE","BRCHECK","DEBUG"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"adminNotes":{
+			"description":"admin Notes of the node",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"	            
+		},
+		"assetStatus":{
+			"description":"asset status of the node",
+			"mandatory":true,
+			"enumValues": ["build","cache","prep","live","sunset","decommed"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		}
+	}
+},
+
+{ 
+	"name": "OsProfile",
+	"repository": "stratus-cms",
+	"description": "The os profile used for OS",
+	"pluralName": "OsProfiles",
+	"parent": "Resource",
+	"fields": {
+		"profileversion":{
+			"description":"a version of os profile",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"os":{
+			"description":"operation system name",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"osversion":{
+			"description":"operation system version",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"osfamily":{
+			"description":"operation system family",
+			"mandatory":true,
+			"dataType":"enumeration",
+			"enumValues": ["LINUX","WINDOWS","SOLARIS"]
+		}
+	}
+},
+
+{ 
+	"name": "VCluster",
+	"repository": "stratus-cms",
+	"pluralName": "VClusters",
+	"parent": "Resource",
+	"fields": {
+		"computes": {
+			"description": "computes this cluster owns",
+			"dataType": "relationship",
+			"refDataType": "Compute",
+			"relationType": "Reference",
+			"cardinality": "Many",
+			"mandatory": true
+		},
+                "accessPoints": {
+			"description": "access point this pool owned",
+			"dataType": "relationship",
+			"refDataType": "AccessPoint",
+			"relationType": "Reference",
+                        "cardinality": "Many",
+			"mandatory": false
+		},
+                "lbPool": {
+			"description": "lbPool in this Cluster",
+			"dataType": "relationship",
+			"refDataType": "LBPool",
+			"relationType": "Reference",
+                        "cardinality": "Many",
+			"mandatory": false
+		}
+	}
+},
+
+{
+	"description":"The asset class sync from TMA",
+	"name" : "Asset",
+	"repository": "stratus-cms",
+	"pluralName":"Assets",
+	"parent": "Resource",
+	"fields" : {
+		"assetId":{
+			"description":"Asset tag or other identifier, e.g. uuid",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"manufacturer":{
+			"description":"Manufacturer of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"locationCode":{
+			"description":"Location of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"serial":{
+			"description":"Serial of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"assetStatus":{
+			"description":"Assetstatus of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"macAddress":{
+			"description":"MacAddress provided by vendor",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"ilomMacAddress":{
+			"description":"provided by vendor",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"site":{
+			"description":"Site of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"assetType":{
+			"description":"assettype of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"subType":{
+			"description":"subtype of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+                },
+		"condition":{
+			"description":"Condition of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"costcenter":{
+			"description":"Cost center of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"allocated":{
+			"description":"Allocation of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"rackUnitNo":{
+			"description":"Rack unit number of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"disposition":{
+			"description":"Disposition of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"lifeCycleState":{
+			"description":"Lifecyclestate of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"electricalCircuit":{
+			"description":"The electrical circult this asset point to",
+			"refDataType": "ElectricalCircuit",
+			"relationType": "Reference",
+			"mandatory":false,
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"powerStrip":{
+			"description":"The PowerStrip this asset point to",
+			"refDataType": "PowerStrip",
+			"relationType": "Reference",
+			"mandatory":false,
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"traceRatedPower":{
+			"description":"Traceratedpower of the asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"model": {
+			"description":"vendor model info",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"parentTag": {
+			"description":"parenttag of this asset, used by blade and chasis",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"leaseStartDate": {
+			"description":"lease start date of this asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"leaseEndDate": {
+			"description":"lease end date of this asset",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		}
+		
+	},
+	"options": {
+		"indexes": {
+		        "serialIndex":{
+				"indexName": "serialIndex",
+				"keyList": ["serial"]
+			}
+		}
+	}
+},
+
+{
+	"description":"A physical, or virtual server able to run an operating system",
+	"name" : "AssetServer",
+	"repository": "stratus-cms",
+	"pluralName":"AssetServers",
+	"parent": "Resource",
+	"fields" : {
+		"asset":{
+			"description":"The asset",
+			"refDataType": "Asset",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"capabilities":{
+			"description":"Enumeration of resources used for allocation",
+			"refDataType": "ResourceCapability",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"faultDomain":{
+			"description":"The faultDomain of this asset server",
+			"refDataType": "FaultDomain",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"type":{
+			"description":"Define if this server is a Bare Metal machine, a VM",
+			"mandatory":true,
+			"enumValues": ["bm","vm"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"networkControllers":{
+			"description":"List of Network controllers, or network interface cards",
+			"refDataType": "NetworkController",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"nodeServer":{
+			"description":"OS instance on this server",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"nodeLOM":{
+			"description":"Light Out Management instance hosted on this server",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"managementServer":{
+			"description":"Reference to the server managing the life cycle of this server",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"reservedResources": {
+			"description":"Reserved resouces for this asset",
+			"refDataType": "ReservedResources",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"configuredTo": {
+			"refDataType": "SkuConfiguration",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"bios":{
+			"description":"the bois of the machine",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"bmc":{
+			"description":"the bmc of the machine",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"disk":{
+			"description":"disk of the machine",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"memory":{
+			"description":"the memory of the machine",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"rootDiskWwn":{
+			"description":"the root disk wwn of the machine",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"rootDiskSerialNumber":{
+			"description":"the root disk serial of the machine",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"raidController":{
+			"description":"the raid controller of the machine",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"processor":{
+			"description":"the processor of the machine",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"scanTime": {
+			"description":"scan time populated by Tivoli agent",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"hyperThread": {
+			"description":"hyperthread of this assetserver",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"spFirmware": {
+			"description":"the spfirmware of this assetserver",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"standard": {
+			"description":"standard of this assetserver",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"threads": {
+			"description":"the threads of this assetserver",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		}
+
+	}
+},
+
+{
+	"name": "FaultDomain",
+	"repository": "stratus-cms",
+	"pluralName": "FaultDomains",
+	"parent": "Base",
+	"description": "fault domain for the infrastructure",
+	"fields": {
+		"path":{
+			"description":"captures the tree representing the various level of fault domains",
+			"mandatory":true,
+			"dataType":"json",
+			"cardinality":"One"
+		}
+	}
+},
+
+{
+	"description":"a physical or virtual network interface controller",
+	"name" : "NetworkController",
+	"repository": "stratus-cms",
+	"pluralName":"NetworkControllers",
+	"parent": "Resource",
+	"fields":{
+		"ifIndex":{
+			"description":"nic index number",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"type":{
+			"description":"The type of the networkcontroller",
+			"mandatory":true,
+			"enumValues": ["physical","virtual"],
+			"defaultValue" : "physical",
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"ifSpeed":{
+			"description":"nic speed",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"ifVersion":{
+			"description":"nic version",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"ifLink" : {
+			"description":"is it a link",
+			"mandatory":false,
+			"dataType":"boolean",
+			"cardinality":"One"
+		},		
+		"macAddress":{
+			"description":"IEEE 802 address",
+			"mandatory":true,
+			"refDataType": "MacAddress",
+			"dataType":"relationship",
+			"cardinality":"One"
+		},
+		"port":{
+			"description":"Reference to the network attachment port: uplink",
+			"refDataType": "NetworkPort",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		}
+	}
+},
+
+{
+	"description":"ReservedResources for provisioning",
+	"name" : "ReservedResources",
+	"repository": "stratus-cms",
+	"pluralName":"ReservedResources",
+	"parent": "Resource",
+	"fields" : {
+		"managedBy":{
+			"description":"managed by a team",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"owner":{
+			"description":"owner of this reservedResources",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"type":{
+			"description":"Define if this server is a Bare Metal machine, or a VM",
+			"mandatory":true,
+			"enumValues": ["AssetServer","NodeServer"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"account": {
+			"description": "account this group belongs to",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "Account",
+			"cardinality": "One"
+		},
+		"resources" : {
+			"description": "list of resources",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "Resource",
+			"cardinality": "Many"
+		},
+		"resourceCapability":{
+			"description":"Enumeration of capability used for allocation",
+			"refDataType": "ResourceCapability",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		}
+	}
+},
+
+{
+	"description":"Server HWModel",
+	"name" : "ServerHWModel",
+	"repository": "stratus-cms",
+	"pluralName":"ServerHWModels",
+	"parent": "Resource",
+	"fields" : {
+		"manufacturer":{
+			"description":"manufacturer",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"productName":{
+			"description":"productName",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"nicSpeed":{
+			"description":"nic speed",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"Many"
+		},
+		"networkControllers":{
+			"refDataType": "NetworkController",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"raidCtrlCount":{
+			"description":"Raid control count",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"raidCtrlDevice":{
+			"description":"Raid Control Device",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"metaDiskCount":{
+			"description":"Meta Disk Count",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"logicalDiskCount":{
+			"description":"Logical disk count",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"processor":{
+			"description":"Processor",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"supports":{
+			"description":"ServerSku",
+			"refDataType": "ServerSku",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		}
+	}
+},
+
+{
+	"description":"Server SKU class",
+	"name" : "ServerSku",
+	"repository": "stratus-cms",
+	"pluralName":"ServerSkus",
+	"parent": "Resource",
+	"fields" : {
+		"physicalDiskCount":{
+			"description":"Physical disk count of the SKU",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"nicCount":{
+			"description":"Network Controller Counts",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"phyProcessorCount":{
+			"description":"Physical Processer Count",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"processorCount":{
+			"description":"Processor count",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"memoryTotal":{
+			"description":"Total memory available",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		}
+	}
+},
+
+{
+	"description":"SKU configuration",
+	"name" : "SkuConfiguration",
+	"repository": "stratus-cms",
+	"pluralName":"SkuConfigurations",
+	"parent": "Resource",
+	"fields" : {
+		"bmcVersion":{
+			"description":"BMC Versions",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"biosVersion":{
+			"description":"BIOSD Versions",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"raidCtrlVersion":{
+			"description":"Raid Control Versions",
+			"mandatory":false,
+			"dataType":"json",
+			"cardinality":"One"
+		},
+		"raidCtrlRaidLevel":{
+			"description":"Raid Control Level",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"Many"
+		},
+		"supportedBy":{
+			"description":"supported by the ServerHWModel",
+			"refDataType": "ServerHWModel",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		}
+	}
+},
+
+{ 
+	"name": "DataCenter",
+	"repository": "stratus-cms",
+	"pluralName": "DataCenters",
+	"description": "The data center",
+	"parent": "Resource",
+	"fields": {
+		"rooms":{
+			"description":"rooms in datacenter",
+			"refDataType": "Room",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		}
+	}	
+},
+
+{ 
+	"name": "Rack",
+	"repository": "stratus-cms",
+	"pluralName": "Racks",
+	"description": "A standardized frame or enclosure used for mounting multiple electronic modules (i.e. chassis, servers etc.)",
+	"parent": "Resource",
+	"fields": {
+		"rackProfile": {
+			"description": "Rack profile",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"model": {
+			"description": "the model of the rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"allocatedStatus": {
+			"description": "the allocated status of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"lifeCycleState": {
+			"description": "the lifecyclestate of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"allocatedRU": {
+			"description": "the allocatedru of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"rawRU": {
+			"description": "the rawru of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"powerAllocated": {
+			"description": "powerallocated of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"owner": {
+			"description": "the buowner of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"location": {
+			"description": "the location of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"adminStatus": {
+			"description": "the adminstatus of this rack",
+			"mandatory":false,
+                	"dataType":"string",
+                	"cardinality":"One"
+		},
+		"powerStrips": {
+			"description": "powerstrips associated with this rack",
+            		"refDataType": "PowerStrip",
+             		"mandatory":false,
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+        	},
+		"assets": {
+			"description": "downstream binding asset series",
+            		"refDataType": "Asset",
+             		"mandatory":false,
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+        	}
+	}	
+},
+
+{ 
+	"name": "Region",
+	"repository": "stratus-cms",
+	"pluralName": "Regions",
+	"description": "The regions for data center",
+	"parent": "Resource",
+	"fields": {
+		"dataCenters":{
+			"description":"datacenter in regions",
+			"refDataType": "DataCenter",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		}
+	}	
+},
+
+{ 
+	"name": "Room",
+	"repository": "stratus-cms",
+	"pluralName": "Rooms",
+	"description": " A physical marked floor space within a datacenter that is divided into multiple rows",
+	"parent": "Resource",
+	"fields": {
+		"rows": {
+			"description":"downstream binding row series",
+			"mandatory":false,
+			"refDataType": "Row",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		},
+		"owner":{
+			"description":"owner",
+	   		"mandatory":false,
+     	   		"dataType":"string"
+		}
+	}	
+},
+
+{
+    "description": " A physical designated floor space within a room that houses a series of racks", 
+    "fields": {
+        "racks": {
+            "cardinality": "Many", 
+            "dataType": "relationship", 
+            "description": "downstream binding rack series", 
+            "mandatory": false, 
+            "refDataType": "Rack", 
+            "relationType": "Reference"
+        },
+	"owner":{
+		"description":"owner",
+   		"mandatory":false,
+   		"dataType":"string"
+	}
+    }, 
+    "name": "Row", 
+	"repository": "stratus-cms",
+    "parent": "Resource", 
+    "pluralName": "Rows"
+},
+
+{ 
+	"name": "DNSRecord",
+	"repository": "stratus-cms",
+	"pluralName": "DNSRecords",
+	"parent": "Resource",
+	"fields": {
+	    "managementService":{
+		"description":"The component controls this DNS record",
+		"mandatory":false,
+		"refDataType": "AccessPoint",
+                "relationType": "Reference",
+                "dataType": "relationship",
+                "cardinality":"One"
+	    },
+	    "fqdn":{
+                "description":"The fully qualified object",
+                "mandatory":true,
+                "refDataType": "FQDN",
+                "relationType": "Reference",
+                "dataType": "relationship",
+                "cardinality":"One"
+            },
+            "type":{
+                "description":"The fully qualified object for this VIP",
+                "mandatory":true,
+                "dataType":"enumeration",
+                "enumValues": ["CNAME","A", "PTR"],
+                "cardinality":"One"
+            },
+            "cname":{
+                "description":"cname",
+                "mandatory":false,
+                "refDataType": "FQDN",
+                "relationType": "Reference",
+                "dataType": "relationship",
+                "cardinality":"One"
+            },
+            "networkAddress":{
+		"description":"The networkaddress of this fqdn",
+		"mandatory":false,
+		"refDataType":"NetworkAddress",
+                "relationType": "Reference",
+		"cardinality":"One",
+		"dataType": "relationship"			    
+	    },
+	    "forwardZone":{
+                "description":"The forward zone file",
+                "mandatory":false,
+                "dataType":"string",
+                "cardinality":"One"
+            },
+	    "reverseZone":{
+                "description":"The reverse zone file",
+                "mandatory":false,
+                "dataType":"string",
+                "cardinality":"One"
+            }
+	}
+},
+
+{ 
+	"name": "FQDN",
+	"repository": "stratus-cms",
+	"pluralName": "FQDNs",
+	"parent": "Resource",
+	"fields": {
+	    "fqdn":{
+                "description":"The fully qualified object",
+                "mandatory":true,
+                "dataType":"string",
+                "cardinality":"One"
+            }
+	}
+},
+
+ {
+	"description":"A Load Balancer end point corresponding to another LB VIP, or a running application",
+	"name" : "LBMember",
+	"repository": "stratus-cms",
+	"pluralName":"LBMembers",
+	"parent": "Resource",
+	"fields" : {
+		"networkAddress":{
+			"description":"end point IP",
+			"mandatory":true,
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"port":{
+			"description":"The TCP/IP port",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"protocol":{
+			"description":"the protocol",
+			"mandatory":true,
+			"enumValues": ["Any","TCP","DNS","UDP","FTP","RADIUS","HTTP","RTSP","SIP_UDP","SSL","SSL_TCP"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"monitors": {
+			"description":"End point monitors",
+			"mandatory":false,
+			"refDataType": "LBMonitor",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		}
+
+	}
+},
+
+{
+	"description":"LB member class ",
+	"name" : "LBMemberOf",
+	"repository": "stratus-cms",
+	"pluralName":"LBMemberOfs",
+	"parent": "Resource",
+	"fields" : {
+		"enabled": {
+			"description":"Enabled or not for this relationship",
+			"mandatory":false,
+			"dataType":"boolean",
+			"cardinality":"One"
+		},
+		"weight": {
+			"description":"Weight used by load balancing method",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"connectionLimit":{
+			"description":"Connection Limit",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"clientKeepLive": {
+			"description":"keep client live",
+			"mandatory":false,
+			"dataType":"boolean",
+			"cardinality":"One"
+		},
+		"clientIpEnabled": {
+			"description":"Define if Client IP is passed in the HTTP header",
+			"mandatory":false,
+			"dataType":"boolean",
+			"cardinality":"One"
+		},
+		"clientIPIdentifier":{
+			"description":"The client IP identifier, see issue 27",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"lbMember":{
+			"description":"lb end point this pool point to",
+			"refDataType": "LBMember",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"opsState":{
+			"description":"States used to drive provisioning and remediation transitions",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		}
+	}
+},
+
+ {
+	"description":"A Load Balancer monitor defining a method to test connectivity. E.g. ECV check",
+	"name" : "LBMonitor",
+	"repository": "stratus-cms",
+	"pluralName":"LBMonitors",
+	"parent": "Base",
+	"fields" : {
+		"type":{
+			"description":"the type of monitor",
+			"mandatory":true,
+			"enumValues": ["HTTP-ECV","HTTP","TCP","HTTPS"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"url":{
+			"description":"the url of the monitor",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"method":{
+			"description":"the command to execute (only for HTTP)",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"responsePattern":{
+			"description":"value returned",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"interval":{
+			"description":"interval between probes in seconds",
+			"mandatory":true,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"timeout":{
+			"description":"timeout of response in seconds",
+			"mandatory":true,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"downTime":{
+			"description":"timeout before mark down",
+			"mandatory":true,
+			"dataType":"integer",
+			"cardinality":"One"
+		}
+	}
+},
+
+{
+	"description":"A load balancer policy",
+	"name" : "LBPolicy",
+	"repository": "stratus-cms",
+	"pluralName":"LBPolicies",
+	"parent": "Base",
+	"fields":{
+		"opsState":{
+			"description":"States used to drive provisioning and remediation transitions",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"name":{
+			"description":"Policy name",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"definition":{
+			"description":"Policy definition",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		}
+	}
+},
+
+{
+	"description":"A Load Balancer Pool (note that eBay pools have no IP address)",
+	"name" : "LBPool",
+	"repository": "stratus-cms",
+	"pluralName":"LBPool",
+	"parent": "Resource",
+	"fields" : {
+		"opsState":{
+			"description":"States used to drive provisioning and remediation transitions",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"method":{
+			"description":"load balancing methods (only common ones)",
+			"mandatory":true,
+			"enumValues": ["LeastConnection","RoundRobin"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"lbService":{
+			"description":"The lb manages this pool",
+			"mandatory":true,
+			"refDataType": "LBService",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"services":{
+			"description":"list of services that are members of this pool",
+			"mandatory":false,
+			"refDataType": "LBMemberOf",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"networkAddress":{
+			"description":"The IP address object corresponding to virtual IP",
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"port":{
+			"description":"The TCP/IP port",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"protocol":{
+			"description":"the protocol",
+			"mandatory":false,
+			"enumValues": ["Any","TCP","DNS","UDP","FTP","RADIUS","HTTP","RTSP","SIP_UDP","SSL","SSL_TCP"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		}
+
+	}
+},
+
+{
+	"description":"A policy based mapping of vip to pools based on incoming traffic",
+	"name" : "LBPoolMap",
+	"repository": "stratus-cms",
+	"pluralName":"LBPoolMaps",
+	"parent": "Base",
+	"fields":{
+		"pool":{
+			"description":"the LB pool this map to",
+			"mandatory":true,
+			"refDataType": "LBPool",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"policy":{
+			"description":"the LB policy directing this mapping (optional)",
+			"mandatory":false,
+			"refDataType": "LBPolicy",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"priority":{
+			"description":"Used to provide policy ordering",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		}
+	}
+},
+
+{
+	"description":"A Load Balancer Service hosted on a one or many physical or virtual load balancers",
+	"name" : "LBService",
+	"repository": "stratus-cms",
+	"pluralName":"LBService",
+	"parent": "Resource",
+	"fields" : {
+		"deviceName":{
+			"description":"The device name of this LBService",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"capabilities":{
+			"description":"Enumeration of resources used for allocation",
+			"refDataType": "ResourceCapability",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"networkAddress":{
+			"description":"the ipaddress associated with the load balancer Management or floating IP",
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"mandatory":true,
+			"cardinality":"One"
+		},
+		"floatType":{
+			"description":"Float type of the LB",
+			"mandatory":true,
+			"enumValues": ["netscala-shared-primary","bigip-shared-primary"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"runsOn":{
+			"description":"The list of nodes this service runs on",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		}
+	}
+},
+
+{
+	"description":"A Load Balancer Virtual IP",
+	"name" : "LBVirtualIP",
+	"repository": "stratus-cms",
+	"pluralName":"LBVirtualIPs",
+	"parent": "Resource",
+	"fields" : {
+		"lbService":{
+			"description":"The lb manages this pool",
+			"mandatory":true,
+			"refDataType": "LBService",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+                "enabled": {
+                        "description":"Enabled or not for this relationship",
+                        "mandatory":false,
+                        "dataType":"boolean",
+                        "cardinality":"One"
+                },
+		"networkAddress":{
+			"description":"The IP address object corresponding to virtual IP",
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"opsState":{
+			"description":"States used to drive provisioning and remediation transitions",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"port":{
+			"description":"The TCP/IP port",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"protocol":{
+			"description":"the protocol",
+			"mandatory":true,
+			"enumValues": ["Any","TCP","DNS","UDP","FTP","RADIUS","HTTP","RTSP","SIP_UDP","SSL","SSL_TCP"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"poolMaps":{
+			"description":"The pool map of this lbpool (optional)",
+			"mandatory":false,
+			"refDataType": "LBPoolMap",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"pools":{
+			"description":"a policy based list of Load Balancer pools this vip is directing to.",
+			"mandatory":false,
+			"refDataType": "LBPool",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"monitor":{
+			"description":"Monitors for this vip",
+			"mandatory":false,
+			"refDataType": "LBMonitor",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		}
+	}
+},
+
+{ 
+	"name": "BridgeGroup",
+	"repository": "stratus-cms",
+	"pluralName": "BridgeGroups",
+	"description": "A bridge group is a collection of network switches that forms a broadcast domain.",
+	"parent": "Resource",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"networkDevices": {
+			"description":"switches for the same broadcast domain",
+			 "mandatory":false,
+			"refDataType": "NetworkDevice",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		},
+		"vlans":{
+			"mandatory":false,
+			"description":"vlan in this bridgegroup",
+			"refDataType": "Vlan",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		}
+		
+	}	
+},
+
+{
+	"description":"L2 Network Interfaces as provided by an operating system, e.g. through ifconfig -a",
+	"name" : "MacAddress",
+	"repository": "stratus-cms",
+	"pluralName":"MacAddresses",
+	"parent": "Resource",
+	"fields":{		
+		"802Address":{
+			"description":"IEEE 802 address",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		}
+	}
+},
+
+{ 
+	"name": "Module",
+	"repository": "stratus-cms",
+	"pluralName": "Modules",
+	"description": "A network module used on switches",
+	"parent": "Resource",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"serial":{
+			"description":"the serial of the module",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"modnum":{
+			"description":"the model number of the module",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"model":{
+			"description":"model name",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"flag":{
+			"description":"the flag of the model",
+			"mandatory":false,
+			"dataType":"string"
+		},		   
+                "networkPorts": {
+                        "description": "the ports in this module",
+                        "dataType": "relationship",
+                        "refDataType": "NetworkPort",
+			"relationType": "Reference",
+                        "mandatory": true,
+                        "cardinality": "Many"
+                },
+                "asset": {
+                        "description": "the asset of this module",
+                        "dataType": "relationship",
+                        "refDataType": "Asset",
+                        "relationType": "Reference",
+                        "mandatory": true,
+                        "cardinality": "One"
+                }
+	}	
+},
+
+{
+	"description":"An IPv4 or IPv6 address",
+	"name" : "NetworkAddress",
+	"repository": "stratus-cms",
+	"pluralName":"NetworkAddresses",
+	"parent": "Resource",
+	"fields":{
+		"address":{
+			"description":"IPv4 or IPv6 address",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"			    
+		},
+		"ipVersion":{
+			"description":"define the version of the IP address",
+			"mandatory":true,
+			"enumValues": ["IPv4","IPv6"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		},
+		"vendor":{
+			"description":"The vendor of this ip node, discoverred by tools",
+			"mandatory":false,
+			"enumValues": ["netscaler","bigip"],
+			"dataType":"enumeration",
+			"cardinality":"One"
+		}
+	}
+},
+
+{ 
+	"name": "NetworkBubble",
+	"repository": "stratus-cms",
+	"pluralName": "NetworkBubbles",
+	"description": "A group of devices that in the same production service level",
+	"parent": "Resource",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource",
+			"mandatory":false,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"networkDevices": {
+			"description": "switches in this bubble",
+			"refDataType": "NetworkDevice",
+             		"mandatory":false,
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+        	},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":true,
+			"dataType":"string"
+		}        		
+	}	
+},
+
+{ 
+	"name": "NetworkDevice",
+	"repository": "stratus-cms",
+	"pluralName": "NetworkDevices",
+	"description": "The device for switches",
+	"parent": "Resource",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"ipAddress":{
+			"description":"IPv4 or IPv6 address",
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"model":{
+			"description":"model name",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"nrServer":{
+			"description":"the netrange server",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"snmpProfile":{
+			"description":"the snmpprofile of this switch",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"serial":{
+			"description":"the serial of the device",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"zone":{
+			"description":"the zone of this switch device",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"chassisDesc":{
+			"description":"chassis description",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"switchLabel":{
+			"description":"the label of this switch",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"type":{
+			"description":"type of this network device",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"networkDevices":{
+			"mandatory":false,
+			"description":"The network device it links to",
+			"refDataType": "NetworkDevice",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"asset":{
+			"mandatory":true,
+			"description":"The asset of this device, reference to parent since we may have different assets of network device",
+			"refDataType": "Asset",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"networkPorts":{
+			"mandatory":false,
+			"description":"The network ports of this device",
+			"refDataType": "NetworkPort",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"modules": {
+			"mandatory":false,
+			"description":"The network module of this swtich",
+			"refDataType": "Module",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		}
+	}	
+},
+
+{
+	"description":"A physical or virtual network port",
+	"name" : "NetworkPort",
+	"repository": "stratus-cms",
+	"pluralName":"NetworkPorts",
+	"parent": "Resource",
+	"fields":{
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"port":{
+			"description":"the port",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"type":{
+			"description":"defines the type of port",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"ifIndex":{
+			"description":"The ifindex associated with this port",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"adminStatus":{
+			"description":"The adminstratus of this port",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"operStatus":{
+			"description":"The operstatus of this port",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"nativeVlan":{
+			"description":"The native vlan of this port",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"index":{
+			"description":"The index associated with this port",
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"macAddress":{
+			"description":"IEEE 802 address",
+			"mandatory":false,
+			"refDataType": "MacAddress",
+			"relationType": "Reference",
+			"dataType":"relationship",
+			"cardinality":"One"
+		},
+		"networkPort": {
+			"description":"The network port this port is linked",
+			"refDataType": "NetworkPort",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		}
+	}
+},
+
+{ 
+	"name": "Phase",
+	"repository": "stratus-cms",
+	"pluralName": "Phases",
+	"description": " A phase in the data center",
+	"parent": "Resource",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"networkDevices": {
+			"description":"switches for the same phase",
+			"mandatory":false,
+			"relationType": "Reference",
+			"refDataType": "NetworkDevice",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"adminStatus":{
+			"description":"admin status of this phase",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"visible":{
+			"description":"Is the phase visible",
+			"mandatory":true,
+			"dataType":"boolean"
+		},
+		"wiringPlants":{
+			"description":"wiringplant for this phase",
+			"refDataType": "WiringPlant",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		}
+	}	
+},
+
+{ 
+	"name": "Pod",
+	"repository": "stratus-cms",
+	"pluralName": "Pods",
+	"description": " A pod in the data center",
+	"parent": "Resource",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"networkDevices": {
+			"description":"switches for the same pod",
+			"mandatory":false,
+			"refDataType": "NetworkDevice",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		},
+		"phases":{
+			"description":"phases in this pod",
+			"mandatory":false,
+			"refDataType": "Phase",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		},
+		"bridgeGroups":{
+			"mandatory":false,
+			"description":"bridgegroups for this pod",
+			"refDataType": "BridgeGroup",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "Many"
+		},
+		"dataCenter":{
+			"mandatory":false,
+			"description":"The datacenter",
+			"refDataType": "DataCenter",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "One"
+		}
+	}	
+},
+
+{
+	"description":"A physical or virtual subnet",
+	"name" : "Subnet",
+	"repository": "stratus-cms",
+	"pluralName":"Subnets",
+	"parent": "Resource",
+	"fields":{
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"gateway":{
+			"description":"a network device routing packets between subnets",
+			"mandatory":true,
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"adminStatus":{
+			"description":"adminstatus of this subnet",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"dhcpServers":{
+			"description":"The DHCPServer of this network",
+			"refDataType": "NodeServer",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "Many"
+		},
+		"broadcast":{
+			"description":"The broadcast address for this network",
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"netmask":{
+			"description":"The net mask for this network",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		},
+		"networkAddress":{
+			"description":"The network address for this network",
+			"refDataType": "NetworkAddress",
+			"relationType": "Reference",
+			"dataType": "relationship",
+			"cardinality": "One"
+		},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"dataCenter":{
+			"mandatory":false,
+			"description":"The datacenter",
+			"refDataType": "DataCenter",
+			"relationType": "Reference",
+            		"dataType": "relationship",
+            		"cardinality": "One"
+		}
+	}
+},
+
+{ 
+	"name": "Vlan",
+	"repository": "stratus-cms",
+	"pluralName": "Vlans",
+	"parent": "Resource",
+	"description": "The vlan in the network world",
+	"fields": {
+		"sourceId": {
+			"description":"The sourceid of the resource ",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+		"networkPorts": {
+			"description": "the ports in this vlan",
+			"dataType": "relationship",
+			"refDataType": "NetworkPort",
+			"relationType": "Reference",
+			"mandatory": false,
+			"cardinality": "Many"
+		},
+		"macAddresses": {
+			"description": "network interface that is binded to the vlan",
+			"dataType": "relationship",
+			"refDataType": "MacAddress",
+			"relationType": "Reference",
+			"mandatory": false,
+			"cardinality": "Many"
+		},
+		"owner":{
+			"description":"vlan owner",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"vlanNumber":{
+			"description":"vlan number",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"multicastEnabled":{
+			"description":"multicast enabled",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"adminStatus":{
+			"description":"admin status of this vlan",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"vlanProfile":{
+			"description":"vlan profile",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"productionLevel":{
+			"description":"production service level",
+			"mandatory":true,
+			"dataType":"string"
+		},
+		"subnets":{
+			"description":"The networks in the vlan",
+			"mandatory":false,
+			"refDataType": "Subnet",
+            		"dataType": "relationship",
+			"relationType": "Reference",
+            		"cardinality": "Many"
+		}
+	}
+},
+
+{ 
+	"name": "ElectricalCircuit",
+	"repository": "stratus-cms",
+	"pluralName": "ElectricalCircuits",
+	"description": "The ElectricalCircuit",
+	"parent": "Resource",
+	"fields": {
+		"model":{
+			"description":"model",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"maxPowerCapacity":{
+			"description":"maxpowercapacity",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"alarmLevelPowerCapacity":{
+			"description":"alarmlevelpowercapacity",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"polePosition":{
+			"description":"poleposition",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"receptacleType":{
+			"description":"receptacletype",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"redundancyZone":{
+			"description":"redundancyzone",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"poleCount":{
+			"description":"polecount",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"voltage":{
+			"description":"voltage",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"conversionToWatts":{
+			"description":"conversiontowatts",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"owner":{
+			"description":"owner",
+			"mandatory":false,
+			"dataType":"string"
+		}
+	}	
+},
+
+{ 
+	"name": "PowerStrip",
+	"repository": "stratus-cms",
+	"pluralName": "PowerStrips",
+	"description": "The powerstrip",
+	"parent": "Resource",
+	"fields": {
+		"owner":{
+			"description":"owner",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"receptacleCount":{
+			"description":"receptaclecount",
+			"mandatory":false,
+			"dataType":"string"
+		},
+                "asset": {
+                        "description": "the asset of this module",
+                        "dataType": "relationship",
+                        "refDataType": "Asset",
+                        "relationType": "Reference",
+                        "mandatory": true,
+                        "cardinality": "One"
+                },
+                "electricalCircuit": {
+                        "description": "the electrical circuit associated with this powerstrip",
+                        "dataType": "relationship",
+                        "refDataType": "Asset",
+                        "relationType": "Reference",
+                        "mandatory": true,
+                        "cardinality": "One"
+                },
+		"receptacleType":{
+			"description":"receptacletype",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"model":{
+			"description":"model",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"maxPowerCapacity":{
+			"description":"maxpowercapacity",
+			"mandatory":false,
+			"dataType":"string"
+		}
+	}	
+},
+
+{ 
+	"name": "WiringPlant",
+	"repository": "stratus-cms",
+	"pluralName": "Wiringplants",
+	"description": "The wiringplant",
+	"parent": "Resource",
+	"fields": {
+		"plantId":{
+			"description":"plantid of this wiringplant",
+			"mandatory":false,
+			"dataType":"string"
+		},
+		"type":{
+			"description":"type of this wiringplant",
+			"mandatory":false,
+			"dataType":"string"
+		}
+	}	
+},
+
+{
+	"name": "ApplicationService",
+	"repository": "stratus-cms",
+	"pluralName": "ApplicationServices",
+	"parent": "Resource",
+	"description": "an application service composed by a set of individual logical service nodes (ServiceInstances)",
+	"fields": {
+		"applicationId": {
+			"description": "application id, which constrains the type of manifests that can be installed on this ApplicationService",
+			"dataType": "string"
+		},
+		"alias": {
+			"description": "calpoolname",
+			"dataType": "string"
+		},
+		"architecture": {
+			"description": "application architecture, e.g. v3, r1 or ebox",
+			"dataType": "string"
+		},
+		"archtier": {
+			"description": "define proper architecture for alerting and repaire process",
+			"dataType": "string"
+		},
+		"lifeCycleState": {
+			"description": "controls life cycle management, refer https://wiki.vip.corp.ebay.com/display/EMS/CLM+State+Transitions",
+			"dataType": "enumeration",
+			"defaultValue" : "BUILD",
+			"enumValues": [ "BUILD", "PREP", "LIVE", "SUNSET","DECOMMED","ARCHIVED" ]
+		},
+		"documentUrl": {
+			"description": "refered by SEC as playbook",
+			"dataType": "string"
+		},
+		"nugget": {
+			"description": "short name to unique identify an application",
+			"dataType": "string"
+		},
+		"tier": {
+			"description": "indicate DR level, refer to DR playbook",
+			"dataType": "enumeration",
+			"defaultValue" : "5",
+			"enumValues": [ "1", "2", "3", "4","5"]
+		},
+		"locale": {
+			"description": "locale of the application service",
+			"dataType": "enumeration",
+			"defaultValue" : "null",
+			"enumValues": [ "core", "intl", "uni", "null"]
+		},
+		"dependOn":{
+			"description": "depends on data services",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "DataService",
+			"cardinality": "Many"
+		},
+		"serviceInstances": {
+			"description": "list of individual ServiceInstance nodes that compose this application",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "ServiceInstance",
+			"cardinality": "Many"
+		},
+		"updateStrategies": {
+			"description": "update strategies that operations can apply to this application service",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "UpdateStrategy",
+			"cardinality": "Many"
+		},
+		"defaultUpdateStrategy": {
+			"description": "default update strategy for operations to apply to this application service",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "UpdateStrategy"
+		},
+		"activeManifestRef": {
+			"description": "software manifest that should be active on all nodes in this ApplicationService",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference"
+		},		
+		"activeManifestHistory": {
+			"description": "history of activated manifests on this ApplicationService",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		},
+		"installedManifestsRef": {
+			"description": "list of manifests that should be installed on this service node",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		},
+		"resourceClusters": {
+			"description": "list of VClusters that make up this ApplicationService",
+			"dataType": "relationship",
+			"refDataType": "VCluster",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		},
+		"escalation": {
+			"description": "the escalations this resource associated with",
+			"dataType": "relationship",
+			"mandatory": false,
+			"relationType": "Reference",
+			"refDataType": "Escalation",
+			"cardinality":"One"
+		},
+		"accessPoints": {
+			"description": "accesspoint exposed by this application, typically one, but possible to have many",
+			"dataType": "relationship",
+			"refDataType": "AccessPoint",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		}
+		
+	}	
+},
+
+{
+	"name": "DataService",
+	"repository": "stratus-cms",
+	"pluralName": "DataServices",
+	"parent": "Resource",
+	"description": "The dataservice, see https://wiki.vip.corp.ebay.com/display/CLOUD/20130521+DataService",
+	"fields": {
+		"id": {
+			"description": "the DataService id",
+			"dataType": "string"
+		},
+		"type": {
+			"description": "the DataService type",
+			"dataType": "string"
+		},
+		"accessPoints": {
+			"description": "the accesspoints in this data service",
+			"dataType": "relationship",
+			"refDataType": "AccessPoint",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		}
+		
+	}	
+},
+
+{ 
+	"name": "Manifest",
+	"repository": "stratus-cms",
+	"pluralName": "Manifests",
+	"parent": "Base",
+	"description": "deployable unit of software consisting of packages",
+	"fields": {
+		"owner": {
+			"description": "identity of the owner of this manifest",
+			"dataType": "string"
+		},
+		"softwareVersion": {
+			"description": "version of this manifest",
+			"dataType": "string",
+			"mandatory": true			
+		},		
+		"approvals": {
+			"description": "list of approvals for this manifest",
+			"dataType": "relationship",
+			"refDataType": "ManifestApproval",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		},
+		"packages": {
+			"description": "list of packages that comprise this manifest",
+			"dataType": "relationship",
+			"refDataType": "Package",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		}
+	},
+	"options":{
+	    "indexes":{
+	    }
+	}
+},
+
+{
+	"name": "ManifestApproval",
+	"repository": "stratus-cms",
+	"pluralName": "ManifestApprovals",
+	"description": "an approval for a manifest to be installed in a given class of service",
+    "parent": "Base",
+	"fields": {
+		"applicationId": {
+			"description": "application id's that this manifest is approved for, '*' for all",
+			"dataType": "string"
+		},
+		"classOfService": {
+			"description": "class of service this this manifest is approved for",
+			"dataType": "relationship",
+			"refDataType": "ClassOfService",
+			"relationType": "Reference"
+		},
+		"approver": {
+			"description": "approver of this manifest",
+			"dataType": "string"
+		}
+	},
+	"options": {
+		"indexes":{
+		    "applicationIdIndex":{
+		        "indexName": "applicationIdIndex",
+			    "keyList": ["applicationId"],			
+			    "indexOptions": [ "unique" ]
+			}
+		}
+	}
+},
+
+{ 
+	"name": "Package",
+	"repository": "stratus-cms",
+	"pluralName": "Packages",
+	"parent": "Base",
+	"description": "a software package",
+	"fields": {
+		"version": {
+			"description": "version of this package",
+			"dataType": "string",
+			"mandatory": true			
+		},		
+		"externalId": {
+			"description": "location of package",
+			"dataType": "string",
+			"mandatory": true			
+		},
+		"type": {
+			"description": "package type",
+			"dataType": "string"
+		},
+		"status": {
+			"description": "Status of package",
+			"dataType": "enumeration",
+			"defaultValue" : "live",
+			"enumValues": [ "live", "deprecated" ]
+		}
+	},
+	"options":{
+	    "indexes":{
+	    }
+	}
+},
+
+{ 
+	"name": "ServiceAccessPoint" ,
+	"repository": "stratus-cms",
+	"pluralName": "ServiceAccessPoints",
+	"parent": "Base",
+	"description": "service access point specification",
+	"fields": {
+		"port": {
+			"description": "port number",
+			"dataType": "integer",
+			"mandatory": true
+		},
+		"protocol": {
+			"description": "socket protocol",
+			"dataType": "enumeration",
+			"enumValues": [ "any","tcp","dns","udp","ftp","radius","http","rtsp","sip_udp","ssl","ssl_tcp" ],
+			"cardinality": "One",
+			"mandatory": true
+		}
+	}
+},
+
+{
+	"name": "ServiceInstance",
+	"repository": "stratus-cms",
+	"pluralName": "ServiceInstances",
+	"parent": "Resource",
+	"description": "an application service node",
+	"fields": {
+		"activeManifestRef": {
+			"description": "software manifest that should be active on this service node",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference"
+		},
+		"activeManifestCur": {
+			"description": "software manifest that is active on this service node",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference"
+		},
+		"activeManifestDiff":{
+			"description": "check whether there exists difference between activeManifestRef & activeManifestCur",
+			"dataType":"boolean",
+			"defaultValue": false,
+			"expression": "$activeManifestCur == $activeManifestRef"
+		},
+		"installedManifestsRef": {
+			"description": "list of manifests that should be installed on this service node",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		},
+		"installedManifestsCur": {
+			"description": "list of manifests that are installed on this service node",
+			"dataType": "relationship",
+			"refDataType": "Manifest",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		},
+		"installedManifestDiff":{
+			"description": "check whether there exists difference between installedManifestsCur & installedManifestsRef",
+			"dataType":"boolean",
+			"defaultValue": false,
+			"expression":  "curCount = 0; $installedManifestsRef.forEach(function check(x){if ($installedManifestsCur.indexOf(x) == -1){curCount++}});refCount=0;$installedManifestsRef.forEach(function check(x){if ($installedManifestsCur.indexOf(x) == -1){refCount++}}); curCount==0 && refCount==0;"
+		},
+		"runsOn": {
+			"description": "compute object that this service instance node runs on",
+			"dataType": "relationship",
+			"refDataType": "Compute",
+			"relationType": "Reference"
+		},
+		"serviceAccessPoints": {
+			"description": "service port and protocol exposed by this node, typically one, but possible to have many",
+			"dataType": "relationship",
+			"refDataType": "ServiceAccessPoint",
+			"relationType": "Reference",
+			"cardinality": "Many"
+		}	
+	}
+},
+
+{
+	"name": "StrategySegment",
+	"repository": "stratus-cms",
+	"description": "a segment within an update strategy",
+	"pluralName": "StrategySegments",
+	"fields": {
+		"targetFilters": {
+			"description": "a list of filter queries for resources for 'explicit' type segments",
+			"dataType": "string",
+			"cardinality": "Many"
+		},
+		"distribution": {
+			"description": "number of nodes to select for this segment. Append '%' for percentage.  For 'random' type segments",
+			"dataType": "string"
+		},
+		"passThreshold": {
+			"description": "pass threshold count for this segment.  Append '%' to use percentage instead of count",
+			"dataType": "string",
+			"defaultValue": "0",
+			"mandatory": true
+		}
+	}
+},
+
+{
+  "name": "Topology",
+  "repository": "stratus-cms",
+  "pluralName": "Topologies",
+  "parent": "Resource",
+  "description": "Described all the components including Infrastructure info and Application info",
+  "fields": {
+    "request":{
+       "description": "the request coming from customer",
+       "dataType": "json",
+       "cardinality":"One"
+     },
+    "applicationServices": {
+      "description": "application services",
+      "dataType": "relationship",
+      "relationType": "Reference",
+      "refDataType": "ApplicationService",
+      "cardinality": "Many"
+    },
+    "resourceClusters": {
+      "description": "list of puppet pools that make up this topology",
+      "dataType": "relationship",
+      "refDataType": "VCluster",
+      "relationType": "Reference",
+      "cardinality": "Many"
+    },
+    "accessPoints": {
+      "description": "vip and service port",
+      "dataType": "relationship",
+      "refDataType": "ServiceAccessPoint",
+      "relationType": "Reference",
+      "cardinality": "Many"
+    }
+  }
+},
+
+{ 
+	"name": "UpdateStrategy",
+	"repository": "stratus-cms",
+	"pluralName": "UpdateStrategies",
+	"parent": "Resource",
+	"description": "used to organize resources for sequencing and parallelizing operations",
+	"fields": {
+		"version": {
+			"description": "version of this update strategy",
+			"dataType": "string",
+			"mandatory": true			
+		},
+		"segmentType": {
+			"description": "indicates if the segment types will explicitly select resources or whether random selection is used",
+			"dataType": "enumeration",
+			"enumValues": [ "explicit", "random" ],
+			"defaultValue": "random",
+			"mandatory": true			
+		},
+		"passThreshold": {
+			"description": "pass threshold count for this strategy.  Append '%' to use percentage instead of count",
+			"dataType": "string",
+			"defaultValue": "0",
+			"mandatory": true
+		},
+		"segments": {
+			"description": "resource segments",
+			"dataType": "relationship",
+			"refDataType": "StrategySegment",
+			"relationType": "Reference",
+			"cardinality": "Many",
+			"mandatory": true
+		}
+	}		
+},
+
+{
+	"name": "Account",
+	"repository": "stratus-cms",
+	"pluralName": "Accounts",
+	"parent": "Base",
+	"description": "CMS Account class",
+	"fields": {
+		"accountId": {
+                        "description": "account id of this account",
+                        "dataType": "string",
+                        "mandatory": true
+		},
+		"dl": {
+                        "description": "the DL for this account",
+                        "dataType": "string",
+                        "mandatory": true
+		},
+		"accountType": {
+			"description": "type of this account",
+			"dataType": "enumeration",
+			"enumValues": [ "CORP_ID", "DEDICATE_TEAM","DOMAIN" ],
+			"mandatory": true
+		},
+		"lifeCycleState": {
+			"description": "life cycle state of this acount",
+			"dataType": "enumeration",
+			"enumValues": [ "Active", "Disabled" ],
+			"mandatory": true
+		},
+		"organization": {
+			"description": "organization associated with this account",
+			"dataType": "relationship",
+			"refDataType": "Organization",
+			"relationType": "Reference",
+			"cardinality": "One"
+		}
+	},
+	"options": {
+		"indexes": {
+		        "accountIdIndex":{
+				"indexName": "accountIdIndex",
+				"keyList": ["accountId"],
+				"indexOptions": ["unique"]
+		        }
+	        }
+        }
+
+},
+
+{
+	"name": "Base",
+	"repository": "stratus-cms",
+	"description": "base type",
+	"pluralName": "Bases",
+	"fields": {
+		"description": {
+			"dataType": "string",
+			"mandatory":false,
+			"description": "object description",
+			"cardinality": "One"
+		},
+		"label": {
+			"description":"The label of the resource ",
+			"mandatory":false,
+			"dataType": "string",
+			"cardinality": "One"
+		}
+	},
+	"options": {
+		"indexes": {
+		        "labelIndex":{
+				"indexName": "labelIndex",
+				"keyList": ["label"]
+			}
+		}
+	}
+},
+
+{
+	"name": "ClassOfService",
+	"repository": "stratus-cms",
+	"pluralName": "ClassesOfServices",
+	"parent": "Base",
+	"description": "object representing a class of service, defined by different sets of SLA's",
+	"fields": {
+		"type": {
+			"description": "the class of service",
+			"dataType": "enumeration",
+			"defaultValue" : "DEV",
+			"enumValues": [ "DEV", "QA", "PREPRODUCTION", "PRODUCTION", "INFRASTRUCTURE", "EXPERIMENTATION" ]
+		}
+	}
+},
+
+{
+	"name": "Contact",
+	"repository": "stratus-cms",
+	"parent": "Base",
+	"pluralName" : "Contacts",
+	"description" : "contact information",
+	"fields": {
+		"name": {
+			"description": "name of contact",
+			"dataType": "string"
+		},
+		"email": {
+			"description": "email of contact",
+			"dataType": "string"
+		},
+		"phone": {
+			"description": "phone number of contact",
+			"dataType": "string"
+		}
+	}
+},
+
+{
+	"name": "Environment",
+	"repository": "stratus-cms",
+	"pluralName": "Environments",
+	"parent": "Resource",
+	"description": "Houses a set of Resources that are tied to a single ClassOfService",
+	"fields": {
+		"classOfService": {
+			"description": "the ClassOfService that this environment is bound to",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "ClassOfService",
+			"mandatory": true
+		},
+		"account": {
+			"description": "the Account that owns this environment",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "Account"
+		}		
+	}
+},
+
+{
+	"name": "Escalation",
+	"repository": "stratus-cms",
+	"pluralName": "Escalations",
+	"parent": "Resource",
+	"description": "escalation from AR team",
+	"fields": {
+		"teamDL": {
+			"description": "Optional DL that can be provided by team",
+			"dataType": "string"
+		},
+		"teamSiteURL": {
+			"description": "Optional DL of team support page",
+			"dataType": "string"
+		},
+		"contact": {
+			"description": "Person that should be contacted first for a problem",
+	       		"dataType": "relationship",
+			"refDataType": "Contact",
+			"relationType": "Reference",
+			"cardinality": "One",
+			"mandatory": true
+	        },		
+		"escalation": {
+			"description": "Person that should be contacted if primary is not responding",
+	       		"dataType": "relationship",
+			"refDataType": "Contact",
+			"relationType": "Reference",
+			"cardinality": "One",
+			"mandatory": true
+	        },
+		"primaryHours": {
+			"description": "Hours primary escaltion should be expected to respond",
+			"dataType": "string",
+			"mandatory": true
+		},
+		"offHours": {
+			"description": "Hours the off hours contact and esclation should be expected to respond",
+			"dataType": "string",
+			"mandatory": true
+		},
+		"offHoursContact": {
+			"description": "off hour contact",
+	       		"dataType": "relationship",
+			"refDataType": "Contact",
+			"relationType": "Reference",
+			"cardinality": "One",
+			"mandatory": true
+	        },		
+		"offHoursEscalation": {
+			"description": "off hours escalation",
+	       		"dataType": "relationship",
+			"refDataType": "Contact",
+			"relationType": "Reference",
+			"cardinality": "One",
+			"mandatory": true
+	        },
+		"moreInfo": {
+			"description": "Free form text field that can be used to provide special escalation instructions",
+			"dataType": "string"
+		},
+		"lifeCycleState": {
+			"description": "Two states - active or retired.  Active is when the userid is a valid user in LDAP, retired are records were user has left company",
+			"dataType": "enumeration",
+			"defaultValue" : "active",
+			"enumValues": [ "active", "retired"]
+ 	        },
+		"dedicatedTeam": {
+			"description": "This value is looked up from ProductMaster based on the based on the userid value",
+			"dataType": "string"
+		},
+		"dedicatedTeamLeadDL": {
+			"description": "This value is looked up from ProductMaster based on the userid value",
+			"dataType": "string"
+		},
+		"dedicatedTeamId": {
+			"description": "This value is looked up from Product Master based on the userid value. It is the unique identifier in Product Master for the Dedicated Team.",
+			"dataType": "string"
+		}
+	}
+},
+
+{
+	"name": "Identity",
+	"repository": "stratus-cms",
+	"pluralName": "Identities",
+	"parent": "Base",
+	"description": "identity within Stratus",
+	"fields": {
+		"contact": {
+			"description": "account contact information",
+			"dataType": "relationship",
+			"refDataType": "Contact",
+			"relationType": "Reference"
+		},
+		"externalId" : {
+			"description": "external system identifier (e.g. LDAP)",
+			"dataType": "string"
+		},
+		"identityType": {
+			"description": "type of identity",
+			"dataType": "enumeration",
+			"enumValues": [ "USER", "GROUP" ],
+			"mandatory": true
+		}
+	}	
+},
+
+{
+	"name": "Organization",
+	"repository": "stratus-cms",
+	"pluralName": "Organizations",
+	"parent": "Base",
+	"description": "Organization, with Organization code",
+	"fields": {
+		"sapCode": {
+			"description": "SAP code for the organization",
+			"mandatory":true,
+			"dataType":"string",
+			"cardinality":"One"
+		}
+
+	},
+	"options": {
+		"indexes": {
+		        "sapCodeIndex":{
+				"indexName": "sapCodeIndex",
+				"keyList": ["sapCode"],
+				"indexOptions": ["unique"]
+		        }
+	        }
+        }
+
+},
+
+{
+	"name": "Resource",
+	"repository": "stratus-cms",
+	"pluralName": "Resources",
+	"parent": "Base",
+	"description": "A stratus managed resource",
+	"fields": {
+		"healthState": {
+			"description": "health of this resource",
+			"dataType": "enumeration",
+			"defaultValue" : "healthy",
+			"enumValues": [ "healthy", "error", "probation", "maintenance" ]
+		},
+		"environment": {
+			"description": "the environment this Resource belongs to",
+			"dataType": "relationship",
+			"mandatory": false,
+			"relationType": "Reference",
+			"refDataType": "Environment"
+		},
+		"resourceId": {
+			"description": "The id of this resource",
+			"dataType": "string",
+			"mandatory": true
+		},
+		"userData": {
+			"description": "arbitrary user data, ignored by startus",
+			"dataType": "json"
+		}
+	},
+	"options": {
+		"indexes": {
+		        "resourceIdIndex":{
+				"indexName": "resourceIdIndex",
+				"keyList": ["resourceId"],
+				"indexOptions": ["unique"]
+		        }
+	        }
+        }
+},
+
+{
+	"description":"Defines available and used resources",
+	"name" : "ResourceCapability",
+	"repository": "stratus-cms",
+	"pluralName":"ResourceCapabilities",
+	"parent": "Base",
+	"fields":{
+		"type":{
+			"dataType":"enumeration",
+			"enumValues": ["cpu","memory","bandwidth"],
+			"cardinality":"One"	            
+		},
+		"total":{
+			"mandatory":false,
+			"dataType":"long",
+			"cardinality":"One"	            
+		},
+		"used":{
+			"mandatory":false,
+			"dataType":"long",
+			"cardinality":"One"	            
+		},
+		"reserved":{
+			"mandatory":false,
+			"dataType":"long",
+			"cardinality":"One"	            
+		},
+		"unit":{
+			"mandatory":false,
+			"dataType":"enumeration",
+			"enumValues": ["unit","MB","GB","TB","Byte","bit","Mb","Gb","Tb"],
+			"cardinality":"One"	            
+		},
+		"values":{
+			"mandatory":false,
+			"dataType":"string",
+			"cardinality":"Many"
+		},
+		"maxCapacity":{
+			"description":"max capacity of the machine",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"usedCapacity":{
+			"description":"used capacity of the machine",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		},
+		"reservedCapacity":{
+			"description":"reserved capacity of the machine",
+			"mandatory":false,
+			"dataType":"integer",
+			"cardinality":"One"
+		}
+
+	}
+},
+
+{
+	"name": "ResourceGroup",
+	"repository": "stratus-cms",
+	"pluralName": "ResourceGroups",
+	"parent": "Resource",
+	"description": "a grouping of Resources",
+	"fields": {
+		"type" : {
+			"description":"The type of the resourcegroup",
+			"mandatory":true,
+			"dataType": "string",
+			"cardinality": "One"
+		},
+                "parentGroup" : {
+                        "description": "parent resource group",
+                        "dataType": "relationship",
+                        "relationType": "Reference",
+                        "refDataType": "ResourceGroup"
+                },
+		"children": {
+			"description": "list of child resources",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "Resource",
+			"cardinality": "Many"
+		},
+		"account": {
+			"description": "account this group belongs to",
+			"dataType": "relationship",
+			"relationType": "Reference",
+			"refDataType": "Account",
+			"cardinality": "One"
+		}
+	}
+}
+
+]
+

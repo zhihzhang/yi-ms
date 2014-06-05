@@ -1,0 +1,4 @@
+SendBufferSize: 128000
+Environment: cmsdev
+PoolName: cmsdev
+SiteViewAddr: calpub.arch.ebay.com
