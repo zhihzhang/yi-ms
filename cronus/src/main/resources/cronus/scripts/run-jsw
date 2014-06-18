@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+abspath=$(cd ${0%/*} && echo $PWD/${0##*/})
+scripts_dir=`dirname "$abspath"`
+package_dir=$scripts_dir/..
+container_home=$package_dir/container
+wrapper_home=$package_dir/wrapper-linux-x86-64-3.5.20
+java_dir=$package_dir/java
+echo "java_dir is $java_dir"
+
+echo "before switching JAVA_HOME is $JAVA_HOME"
+export JAVA_HOME=$java_dir
+echo "after switching JAVA_HOME is $JAVA_HOME"
+WRAPPER_EXE=$package_dir/bin/wrapper.sh
+echo "scripts_dir is $scripts_dir"
+echo "package_dir is $package_dir"
+echo "container_home is $container_home"
+echo "wrapper_home is $wrapper_home"
+
+case $1 in
+console)
+sh $WRAPPER_EXE console
+;;
+start)
+sh $WRAPPER_EXE start
+;;
+stop)
+sh $WRAPPER_EXE stop
+;;
+restart)
+sh $WRAPPER_EXE restart
+;;
+condrestart)
+sh $WRAPPER_EXE condrestart
+;;
+status)
+sh $WRAPPER_EXE status
+;;
+dump)
+sh $WRAPPER_EXE dump
+;;
+esac
+exit 0
