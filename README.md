@@ -1,8 +1,10 @@
 #Introduction#
 
-**CMS is a metadata-driven persistence and query service for configuration data**
+**YI-MS is a metadata-driven persistence and query service for configuration data**
 
-CMS (Configuration Management System) is a high performance metadata-driven persistence and query service for configuration data with supporting of RESTful API and client lib (Java, Python). CMS is a generic system that be used for cloud configuration, as well other software needs for configuration. Moreover, CMS supports multiple data repositories for desired data isolation.
+YI-MS (Configuration Management System) is a high performance metadata-driven persistence and query service for configuration data with supporting of RESTful API and client lib (Java, Python). YI-MS is a generic system that be used for cloud configuration, as well other software needs for configuration. Moreover, YI-MS supports multiple data repositories for desired data isolation.
+
+Why the name "YI-MS"? YI in Chinese stands for "easy", also there's a famous Chinese ancient literature "Yi Jing" that tells the art of mastering forthtelling and prediction. The project was rooted and developed by a great team mainly in Shanghai China, hence the name was chosen.
 
 **Metadata Model**
 
@@ -18,14 +20,14 @@ The query service provides an imperative style query language that defines the t
 
 **System Management**
 
-CMS also comes with a system management utility to maintain system healthiness includes monitoring metrics (e.g. API latency / qps) and throttling low-priority API under overload status. The whole system is available to be deployed independently. 
+YI-MS also comes with a system management utility to maintain system healthiness includes monitoring metrics (e.g. API latency / qps) and throttling low-priority API under overload status. The whole system is available to be deployed independently. 
 
 
 #Getting Started#
 
 ##Prerequisites##
 
-CMS need a Mongo DB 2.0 + to run at background for data persistence. 
+YI-MS need a Mongo DB 2.0 + to run at background for data persistence. 
 
 If using 64-bit linux, you can do folowing to install and run Mongo DB.
 
@@ -45,7 +47,7 @@ If using 64-bit linux, you can do folowing to install and run Mongo DB.
 
 ##Quick Start##
 
-CMS is implemented in java and managed by maven. It's easy for user to build and try on a normal computer.
+YI-MS is implemented in java and managed by maven. It's easy for user to build and try on a normal computer.
 
 But for users who just want to try without installing anything, we provid an online console to try. 
 
@@ -56,11 +58,11 @@ An [Online QA Console](http://phx5qa01c-8d6b.stratus.phx.qa.ebay.com:8080/ui/con
 
 **Build**
 
-CMS using maven to manage project. 
+YI-MS using maven to manage project. 
 you can run :
 
-		$ git clone https://github.scm.corp.ebay.com/cloud-cms/cms.open.git cms.open
-		$ cd cms.open/cms-core
+		$ git clone https://github.scm.corp.ebay.com/cloud-YI-MS/YI-MS.open.git YI-MS.open
+		$ cd YI-MS.open/YI-MS-core
 		$ mvn clean install -DskipTests
 		$ cd web
 		$ mvn war:war
@@ -72,52 +74,18 @@ First start mongo db on localhost:27017.
 
 Then you can either put the builed war file into a Servlet container to run or run the following:
 
-		$ cd cms.open/bin
+		$ cd YI-MS.open/bin
 		$ ./build.sh
 		$ ./demo.sh (or with parameter -initData to reload test data)
 
-to run CMS server in a embedded Jetty Server.
-
-
-# Resources #
-
-**Architecture**
-
-<img src="https://github.scm.corp.ebay.com/cloud-cms/cms.open/raw/master/docs/images/cms_arch.jpg" height="480px" width="480px" />
-
-
-**Docs**
-
-[CMS Design wiki](http://wiki2.arch.ebay.com/display/CLOUD/CMS+Design)
-
-[CMS Presentation on QCon HangZhou 2012](https://github.scm.corp.ebay.com/cloud-cms/cms.open/raw/master/docs/eBay_Cloud_CMS_QCon_2012.pptx "eBay Cloud CMS on QCon HangZhou 2012")
-
-[CMS Presentation on China SoftCon 2011](https://github.scm.corp.ebay.com/cloud-cms/cms.open/raw/master/docs/cms_presentaion_on_china_softcon_2011.pptx "CMS Presentation on China SoftCon 2011")
-
-**Contact DL**
-
-DL-eBay-Cloud-Team-CMS-SHA@ebay.com
-
-**Jira**
-
-[http://jirap.corp.ebay.com/browse/CMS](http://jirap.corp.ebay.com/browse/CMS)
-
-**CI**
-
-[http://phx5qa01c-c9b2.stratus.phx.qa.ebay.com/](http://phx5qa01c-c9b2.stratus.phx.qa.ebay.com/)
-
-**Sonar**
-
-[http://sonar/dashboard/index/com.ebay.cloud.cms:cms-core](http://sonar/dashboard/index/com.ebay.cloud.cms:cms-core)
-
-
+to run YI-MS server in a embedded Jetty Server.
 
 
 #FAQ#
 
-**What is CMS?**
+**What is YI-MS?**
 
-CMS is a key foundation component of the eBay cloud platform. It provides a high performance metadata-driven persistence and query service for eBay's data-center configuration data. Moreover, CMS is a generic system that be used for persistence of structural data.
+YI-MS is a key foundation component of the eBay cloud platform. It provides a high performance metadata-driven persistence and query service for eBay's data-center configuration data. Moreover, YI-MS is a generic system that be used for persistence of structural data.
 
-CMS offers a high-performance persistence mechanism that combines the scalability of NoSQL databases and the data integrity enforcement typically only found in relational databases. We built CMS on top of MongoDB and implemented services like metadata management, query language, referential integrity, access control and branching to address the limitations of NoSQL database. 
+YI-MS offers a high-performance persistence mechanism that combines the scalability of NoSQL databases and the data integrity enforcement typically only found in relational databases. We built YI-MS on top of MongoDB and implemented services like metadata management, query language, referential integrity, access control and branching to address the limitations of NoSQL database. 
 
