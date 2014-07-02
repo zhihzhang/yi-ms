@@ -53,7 +53,7 @@ But for users who just want to try without installing anything, we provid an onl
 
 **Online Console**
 
-An [Online QA Console](http://phx5qa01c-8d6b.stratus.phx.qa.ebay.com:8080/ui/console.html) & [Cloud Dev Host Console] (http://stratus-3291.stratus.dev.ebay.com:9090/ui/home.html) is provided to sent queries using a web page and display the result. 
+After deployment, an [Online Console](http://host:8080/ui/console.html) is provided to sent queries using a web page and display the result. 
 
 
 **Build**
@@ -79,6 +79,10 @@ Then you can either put the builed war file into a Servlet container to run or r
 		$ ./demo.sh (or with parameter -initData to reload test data)
 
 to run YI-MS server in a embedded Jetty Server.
+
+**Production Deployment**
+
+Production Deployment can be done through cronus agent and cronus master, instruction to be updated
 
 
 #FAQ#
